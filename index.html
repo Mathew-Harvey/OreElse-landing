@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ore Else</title>
+<meta name="description" content="Ore Else is a first-person strategy game coming to Steam, and a demo you can play in your browser is coming soon. Start as one worker with a drill, build an army that argues with you, and jump into any body you own.">
+<meta name="theme-color" content="#0e0d14">
+<link rel="icon" href="media/emblem-0.svg" type="image/svg+xml">
+<link rel="canonical" href="https://mathew-harvey.github.io/OreElse-landing/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ore Else">
+<meta property="og:description" content="Ore Else is a first-person strategy game coming to Steam, and a demo you can play in your browser is coming soon. Start as one worker with a drill, build an army that argues with you, and jump into any body you own.">
+<meta property="og:url" content="https://mathew-harvey.github.io/OreElse-landing/">
+<meta property="og:image" content="https://mathew-harvey.github.io/OreElse-landing/media/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600;1,700&display=swap">
+<style>
+/* Layout: the game's own title screen, then pages of a comic. Every panel is the game's HUD plate: ink border, hard shadow, a -7 degree lean. */
+:root{
+  --bg:#15131c; --panel:#201d2a; --ink:#0e0d14; --paper:#f4ead2; --muted:#a59fb3;
+  --yel:#ffc21a; --teal:#35e0c8; --mag:#ff4f9a; --red:#ff4b3a; --grn:#8be04e; --rust:#c9743f; --ore:#b8f58c;
+  --display:"Anton","Impact","Arial Narrow",sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --comic:"Bangers","Impact",sans-serif;
+  --lean:-7deg;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--paper);font-family:var(--cond);font-size:20px;line-height:1.35;font-weight:500;overflow-x:hidden}
+img,video{max-width:100%;display:block}
+h1,h2,h3,h4{font-family:var(--display);font-weight:400;text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;letter-spacing:.01em}
+p{margin:0}
+a{color:var(--yel)}
+a:focus-visible,button:focus-visible{outline:4px solid var(--teal);outline-offset:4px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(clamp(16px,4vw,48px),env(safe-area-inset-left,0px));padding-right:max(clamp(16px,4vw,48px),env(safe-area-inset-right,0px))}
+.dots{background-image:radial-gradient(rgba(244,234,210,.06) 1.2px,transparent 1.3px);background-size:9px 9px}
+
+/* HUD plate, straight from the game's style sheet */
+.pan{background:rgba(14,13,20,.88);border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);transform:skewX(var(--lean))}
+.pan>.un{transform:skewX(7deg)}
+.lbl{font-family:var(--display);text-transform:uppercase;letter-spacing:.14em;font-size:14px;color:var(--yel)}
+.key{display:inline-flex;align-items:center;justify-content:center;min-width:1.9em;height:1.75em;padding:0 .4em;font-family:var(--display);font-size:.9em;letter-spacing:.04em;color:var(--ink);background:var(--paper);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);transform:skewX(var(--lean));text-transform:uppercase;line-height:1;vertical-align:.08em}
+.key.y{background:var(--yel)}
+
+/* ===== title screen ===== */
+.title{position:relative;min-height:min(100vh,900px);display:flex;flex-direction:column;overflow:hidden;background:var(--ink);border-bottom:6px solid var(--ink)}
+.title .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;animation:drift 40s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1.04) translateX(0)}to{transform:scale(1.1) translateX(-1.6%)}}
+.title .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,13,20,.9) 0%,rgba(14,13,20,.62) 34%,rgba(14,13,20,0) 62%),linear-gradient(0deg,rgba(14,13,20,.9) 0,rgba(14,13,20,0) 28%)}
+.title .wrap{position:relative;flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:40px;align-items:start;padding-block:56px 40px;width:100%}
+.logo{font-size:clamp(84px,13vw,188px);line-height:.86;color:var(--yel);-webkit-text-stroke:.07em var(--ink);paint-order:stroke fill;text-shadow:.06em .06em 0 var(--mag);animation:slam .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes slam{from{transform:rotate(-6deg) scale(1.5);opacity:0}}
+.wt{font-family:var(--display);text-transform:uppercase;letter-spacing:.2em;font-size:14px;color:var(--muted);margin-top:24px}
+.demo{display:inline-block;margin-top:18px;padding:6px 16px 4px;font-family:var(--comic);font-size:26px;letter-spacing:.04em;line-height:1.1;color:var(--ink);background:var(--mag);border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);transform:rotate(-3deg) skewX(var(--lean))}
+.demo span{display:inline-block;transform:skewX(calc(var(--lean) * -1))}
+.pitch{font-family:var(--cond);font-style:italic;font-weight:700;text-transform:uppercase;font-size:clamp(22px,2.3vw,30px);line-height:1.08;max-width:24ch;margin-top:18px;text-shadow:3px 3px 0 var(--ink)}
+.menu{display:flex;flex-direction:column;gap:14px;margin-top:34px;max-width:440px}
+.menu a{display:flex;align-items:baseline;justify-content:space-between;gap:16px;text-decoration:none;color:var(--paper);padding:12px 22px 14px}
+.menu a b{font-family:var(--display);font-weight:400;font-style:italic;text-transform:uppercase;font-size:34px;line-height:1}
+.menu a small{font-family:var(--display);font-style:italic;text-transform:uppercase;letter-spacing:.12em;font-size:13px;color:var(--muted);text-align:right}
+.menu a:hover,.menu a:focus-visible{background:var(--yel);color:var(--ink)}
+.menu a:hover small,.menu a:focus-visible small{color:var(--ink)}
+.side{display:flex;flex-direction:column;gap:18px}
+.card{padding:0}
+.card .hd{display:flex;justify-content:space-between;padding:10px 14px 8px;font-family:var(--display);text-transform:uppercase;letter-spacing:.14em;font-size:14px}
+.card .hd span:last-child{color:var(--muted)}
+.card .hd span:first-child{color:var(--yel)}
+.reel{position:relative;border-block:4px solid var(--ink);background:var(--panel)}
+.reel video{width:100%;aspect-ratio:16/9;object-fit:cover}
+.reel .nm{position:absolute;left:10px;bottom:6px;font-family:var(--display);text-transform:uppercase;font-size:40px;line-height:1;color:var(--paper);text-shadow:3px 3px 0 var(--ink),-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink)}
+.card .bd{padding:12px 16px 18px;display:flex;flex-direction:column;gap:14px}
+.card .bd p{font-weight:600;font-size:18px;line-height:1.3}
+.btn{display:inline-block;align-self:flex-start;font-family:var(--display);font-style:italic;text-transform:uppercase;font-size:28px;line-height:1;color:var(--ink);background:var(--yel);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:10px 22px 12px;text-decoration:none;transform:skewX(var(--lean));cursor:pointer}
+.btn.p{background:var(--paper)}
+.btn:hover{background:var(--paper)}
+.btn.p:hover{background:var(--yel)}
+.note .bd{padding:14px 16px}
+.note p{font-size:18px;font-weight:600}
+.botbar{position:relative;background:rgba(14,13,20,.94);border-top:3px solid #2b2737}
+.botbar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;padding-block:12px}
+.botbar .who{font-family:var(--display);text-transform:uppercase;font-size:26px}
+.botbar .lb{font-family:var(--display);text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--muted)}
+.emb{display:flex;gap:10px;align-items:center}
+.emb img{width:44px;height:44px}
+.botbar .st{margin-left:auto;font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-size:15px;color:var(--yel)}
+
+/* ===== section heads ===== */
+section{position:relative;padding-block:84px}
+.head{display:flex;flex-direction:column;gap:16px;margin-bottom:38px;max-width:860px}
+.head h2{font-size:clamp(46px,6.4vw,88px);color:var(--paper);text-shadow:4px 4px 0 var(--ink)}
+.head h2 em{font-style:normal;color:var(--yel)}
+.head p{font-size:22px;max-width:60ch;color:#ddd3bf}
+
+/* ===== story ===== */
+.story{background:var(--panel)}
+.tcard{position:relative;max-width:900px;margin:0 auto 64px;transform:skewX(var(--lean)) rotate(-2deg);background:var(--yel);color:var(--ink);border:8px solid var(--ink);box-shadow:14px 14px 0 var(--mag);display:grid;grid-template-columns:1fr minmax(0,320px);overflow:hidden}
+.tcard .tx{padding:28px 34px 30px;display:flex;flex-direction:column;justify-content:center;gap:10px;transform:skewX(7deg)}
+.tcard .tx .lbl{color:var(--ink);opacity:.75}
+.tcard h2{font-size:clamp(50px,7vw,96px);line-height:.88}
+.tcard .q{font-family:var(--comic);font-size:clamp(22px,2.6vw,32px);letter-spacing:.03em;line-height:1.05;text-transform:uppercase}
+.tcard .ph{border-left:8px solid var(--ink);background:var(--paper);overflow:hidden}
+.tcard .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;transform:skewX(7deg) scale(1.12)}
+.page{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.fr{position:relative;border:5px solid var(--ink);box-shadow:6px 6px 0 var(--ink);background:var(--ink);overflow:hidden}
+.fr img{width:100%;height:100%;object-fit:cover}
+.page .fr:nth-child(1){grid-column:span 4;transform:rotate(-.6deg)}
+.page .fr:nth-child(2){grid-column:span 2;transform:rotate(.8deg)}
+.page .fr:nth-child(3){grid-column:span 2;transform:rotate(-.9deg)}
+.page .fr:nth-child(4){grid-column:span 2;transform:rotate(.5deg)}
+.page .fr:nth-child(5){grid-column:span 2;transform:rotate(-.4deg)}
+.page .fr:nth-child(6){grid-column:span 3;transform:rotate(.6deg)}
+.page .fr:nth-child(7){grid-column:span 3;transform:rotate(-.7deg)}
+.page .fr:nth-child(2) img,.page .fr:nth-child(3) img,.page .fr:nth-child(4) img,.page .fr:nth-child(5) img{aspect-ratio:16/9}
+.cap{position:absolute;left:-4px;top:-4px;max-width:78%;background:var(--yel);color:var(--ink);border:4px solid var(--ink);padding:6px 12px 7px;font-weight:700;font-size:17px;line-height:1.15}
+.cap.r{left:auto;right:-4px;top:auto;bottom:-4px}
+.stamp{position:absolute;right:7%;bottom:14%;font-family:var(--display);font-size:clamp(34px,4.4vw,60px);color:var(--red);border:6px solid var(--red);padding:2px 16px 6px;transform:rotate(-9deg);letter-spacing:.04em;background:rgba(14,13,20,.2)}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:46px}
+.act{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px}
+.act .un{display:flex;flex-direction:column;gap:8px}
+.act .n{font-family:var(--display);text-transform:uppercase;letter-spacing:.14em;font-size:14px;color:var(--muted)}
+.act h3{font-size:46px;color:var(--yel)}
+.act:nth-child(2) h3{color:var(--teal)}
+.act:nth-child(3) h3{color:var(--grn)}
+.act:nth-child(4) h3{color:var(--mag)}
+.act p{font-size:18px;font-weight:600}
+
+/* ===== jump ===== */
+.jump .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:start}
+.jump .big{transform:rotate(-.8deg)}
+.keys{display:flex;flex-direction:column;gap:16px}
+.krow{padding:12px 16px}
+.krow .un{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.krow .k{display:flex;gap:6px}
+.krow p{font-size:19px;font-weight:600;line-height:1.25}
+.krow p b{font-family:var(--display);font-weight:400;text-transform:uppercase;color:var(--yel);letter-spacing:.03em;font-size:22px;display:block}
+.povs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+.pov{display:flex;flex-direction:column;gap:12px}
+.pov .fr img{aspect-ratio:16/9}
+.pov:nth-child(1) .fr{transform:rotate(.7deg)}
+.pov:nth-child(2) .fr{transform:rotate(-.6deg)}
+.pov:nth-child(3) .fr{transform:rotate(.5deg)}
+.tag{position:absolute;left:10px;bottom:10px;background:rgba(14,13,20,.9);border:3px solid var(--teal);padding:2px 12px 4px;transform:skewX(var(--lean));font-family:var(--display);text-transform:uppercase;font-size:24px;line-height:1.1}
+.pov p{font-size:18px;font-weight:600}
+
+/* ===== plans ===== */
+.plans{background:var(--panel)}
+.plans .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:center}
+.feed{display:flex;flex-direction:column;gap:10px}
+.feed div{background:rgba(14,13,20,.9);border-left:8px solid var(--yel);padding:7px 16px 8px 12px;transform:skewX(var(--lean));font-size:21px;font-weight:600;line-height:1.15;box-shadow:4px 4px 0 var(--ink)}
+.feed div:nth-child(2n){margin-left:24px}
+.feed div i{font-style:normal;display:block;font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.16em;color:var(--yel);margin-bottom:2px}
+.feed div.t{border-color:var(--teal)}
+.feed div.t i{color:var(--teal)}
+.feed div.g{border-color:var(--grn)}
+.feed div.g i{color:var(--grn)}
+.answer{display:flex;flex-wrap:wrap;gap:12px 22px;margin-top:22px;font-size:19px;font-weight:600}
+.answer span{display:flex;align-items:center;gap:8px}
+.plans .shot{transform:rotate(1deg)}
+.qm{display:flex;gap:20px;align-items:center;margin-top:30px;padding:16px 20px}
+.qm .un{display:flex;gap:18px;align-items:center}
+.qm p{font-size:19px;font-weight:600}
+
+/* ===== sides ===== */
+.sides .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.fac{display:flex;flex-direction:column;background:var(--ink);border:5px solid var(--ink);box-shadow:7px 7px 0 var(--yel)}
+.fac.v{box-shadow:7px 7px 0 var(--teal)}
+.fac.g{box-shadow:7px 7px 0 var(--grn)}
+.fac .ph{position:relative;aspect-ratio:4/3;overflow:hidden;border-bottom:5px solid var(--ink)}
+.fac .ph img{width:100%;height:100%;object-fit:cover}
+.fac .ph .emb2{position:absolute;left:10px;top:10px;width:64px;height:64px}
+.fac .act2{position:absolute;right:10px;top:12px;background:var(--yel);color:var(--ink);border:3px solid var(--ink);padding:2px 10px 4px;font-family:var(--display);text-transform:uppercase;font-size:16px;letter-spacing:.08em;transform:skewX(var(--lean))}
+.fac.v .act2{background:var(--teal)}
+.fac.g .act2{background:var(--grn)}
+.fac .bd{padding:18px 18px 20px;display:flex;flex-direction:column;gap:14px;flex:1}
+.fac h3{font-size:40px;color:var(--yel)}
+.fac.v h3{color:var(--teal)}
+.fac.g h3{color:var(--grn)}
+.fac p{font-size:18px;font-weight:600;color:#ddd3bf}
+.fac .balloon{color:var(--ink)}
+.roster{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:auto}
+.roster figure{margin:0;display:flex;flex-direction:column;gap:4px}
+.roster img{aspect-ratio:1;object-fit:cover;border:3px solid var(--paper);background:var(--paper)}
+.roster figcaption{font-family:var(--display);text-transform:uppercase;font-size:15px;letter-spacing:.04em}
+.balloon{position:relative;background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:9px 14px 10px;font-family:var(--comic);font-size:19px;letter-spacing:.03em;text-transform:uppercase;line-height:1.08;box-shadow:4px 4px 0 rgba(14,13,20,.7)}
+.balloon:after{content:"";position:absolute;left:26px;bottom:-14px;width:18px;height:14px;background:var(--paper);border:3px solid var(--ink);border-top:0;border-left:0;transform:skewX(30deg)}
+.balloon small{display:block;font-family:var(--display);font-size:11px;letter-spacing:.14em;opacity:.7;margin-bottom:3px}
+.garage{margin-top:44px;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:10px}
+.garage figure{margin:0;display:flex;flex-direction:column;gap:6px;align-items:center;background:var(--ink);border:4px solid var(--ink);box-shadow:4px 4px 0 #000;overflow:hidden;padding:6px 6px 8px}
+.garage figure img{background:var(--panel)}
+.garage img{width:100%;aspect-ratio:1;object-fit:contain}
+.garage figcaption{font-family:var(--display);text-transform:uppercase;font-size:14px;letter-spacing:.06em;text-align:center}
+.glabel{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin-top:40px}
+.glabel h3{font-size:30px;white-space:nowrap}
+.glabel span{font-size:18px;color:var(--muted);font-weight:600}
+.swarm{margin-top:14px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;background:var(--paper);border:5px solid var(--ink);box-shadow:6px 6px 0 var(--grn);padding:8px 10px}
+.swarm img{width:100%;aspect-ratio:1;object-fit:contain}
+
+/* ===== command view ===== */
+.above{background:#10161c}
+.above .head h2 em{color:var(--teal)}
+.above .wide{transform:rotate(-.5deg);box-shadow:10px 10px 0 var(--teal)}
+.above .wide img{aspect-ratio:16/9}
+.above .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:28px;margin-top:40px;align-items:start}
+.above .two{display:grid;grid-template-columns:1fr;gap:22px}
+.above .two .fr img{aspect-ratio:16/9}
+.above .two .fr:nth-child(1){transform:rotate(.7deg)}
+.above .two .fr:nth-child(2){transform:rotate(-.6deg)}
+.above .sight{font-size:19px;font-weight:600;color:#ddd3bf;margin:0}
+.above .fact b{color:var(--teal)}
+.above .key.y{background:var(--teal)}
+
+/* ===== breaks ===== */
+.breaks{background:#2a1a1a;overflow:hidden}
+.breaks .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.breaks .a{grid-column:1/8;transform:rotate(-1deg)}
+.breaks .b{grid-column:8/13;transform:rotate(2.2deg);align-self:center;margin-left:-60px;z-index:2;box-shadow:10px 10px 0 var(--red)}
+.breaks .a img,.breaks .b img{aspect-ratio:16/9}
+.sfx{position:absolute;font-family:var(--comic);color:var(--yel);font-size:clamp(54px,8vw,120px);line-height:.8;text-shadow:5px 5px 0 var(--ink),-3px -3px 0 var(--ink),3px -3px 0 var(--ink),-3px 3px 0 var(--ink),10px 10px 0 var(--mag);transform:rotate(-12deg);pointer-events:none;letter-spacing:.02em}
+.breaks .a .sfx{right:4%;top:6%}
+.breaks .b .sfx{left:4%;top:4%;color:var(--paper);font-size:clamp(40px,5.5vw,84px);transform:rotate(8deg)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+.fact{padding:16px 20px 18px}
+.fact .un{display:flex;flex-direction:column;gap:6px}
+.fact b{font-family:var(--display);font-weight:400;font-size:58px;line-height:1;color:var(--yel)}
+.fact p{font-size:18px;font-weight:600}
+
+/* ===== modes ===== */
+.modes .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
+.mode{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:var(--panel);border:5px solid var(--ink);box-shadow:7px 7px 0 var(--ink)}
+.mode .fr{border:0;border-right:5px solid var(--ink);box-shadow:none}
+.mode .fr img{height:100%;aspect-ratio:auto;min-height:220px}
+.mode .bd{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px}
+.mode .n{font-family:var(--display);text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--mag)}
+.mode h3{font-size:44px;color:var(--yel)}
+.mode p{font-size:18px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding:0;list-style:none}
+.chips li{font-family:var(--display);text-transform:uppercase;font-size:14px;letter-spacing:.05em;background:var(--ink);border:2px solid var(--yel);padding:2px 9px 3px}
+
+/* ===== play ===== */
+.play{background:var(--yel);color:var(--ink);border-block:6px solid var(--ink)}
+.play .head h2{color:var(--ink);text-shadow:none}
+.play .head p{color:var(--ink)}
+.play .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:34px;align-items:start}
+.ctl{background:var(--ink);color:var(--paper);border:5px solid var(--ink);box-shadow:8px 8px 0 var(--mag);padding:10px 0}
+.ctl table{width:100%;border-collapse:collapse;font-size:19px}
+.ctl td{padding:9px 18px;border-bottom:2px solid #2b2737;vertical-align:middle}
+.ctl tr:last-child td{border-bottom:0}
+.ctl td:first-child{white-space:nowrap;width:1%}
+.ctl .key{margin-right:4px;font-size:15px}
+.ways{display:flex;flex-direction:column;gap:18px}
+.way{background:var(--paper);border:5px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:16px 20px 18px;transform:skewX(var(--lean))}
+.way .un{display:flex;flex-direction:column;gap:6px;transform:skewX(7deg)}
+.way h3{font-size:30px}
+.way p{font-size:18px;font-weight:600}
+
+/* ===== closing ===== */
+.close{background:var(--ink);text-align:left;overflow:hidden}
+.close .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.close:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,13,20,.92),rgba(14,13,20,.35) 70%,rgba(14,13,20,.1))}
+.close .wrap{position:relative;z-index:1;display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.close h2{font-size:clamp(56px,9vw,140px);color:var(--yel);-webkit-text-stroke:.07em var(--ink);paint-order:stroke fill;text-shadow:.06em .06em 0 var(--mag);line-height:.98}
+.close p{font-size:24px;font-weight:600;max-width:46ch;text-shadow:2px 2px 0 var(--ink)}
+.close .row{display:flex;flex-wrap:wrap;gap:18px}
+footer{background:var(--ink);border-top:3px solid #2b2737}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 30px;align-items:center;padding-block:24px 30px;color:var(--muted);font-size:17px}
+footer .mk{display:flex;align-items:center;gap:12px;color:var(--paper);text-decoration:none;font-weight:600}
+footer .mk img{height:30px;width:auto}
+footer p{max-width:70ch}
+
+/* ===== narrow ===== */
+@media (max-width:1000px){
+  .title .wrap{grid-template-columns:1fr;gap:30px}
+  .side{max-width:520px;padding-right:10px}
+  .jump .grid,.plans .grid,.play .grid{grid-template-columns:1fr}
+  .above .grid{grid-template-columns:1fr}
+  .sides .grid{grid-template-columns:1fr}
+  .note{display:none}
+  .modes .grid{grid-template-columns:1fr}
+  .acts{grid-template-columns:repeat(2,1fr)}
+  .garage{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .swarm{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  body{font-size:18px}
+  section{padding-block:60px}
+  .title{min-height:0}
+  .title .shade{background:linear-gradient(180deg,rgba(14,13,20,.55) 0%,rgba(14,13,20,.75) 40%,rgba(14,13,20,.96) 70%)}
+  .title .wrap{padding-block:34px 28px}
+  .menu a{padding:10px 16px 12px}
+  .menu a b{font-size:28px}
+  .botbar .st{margin-left:0}
+  .tcard{grid-template-columns:1fr;transform:rotate(-1.5deg)}
+  .tcard .tx{transform:none;padding:22px 22px 24px}
+  .tcard .ph{border-left:0;border-top:8px solid var(--ink);height:210px}
+  .tcard .ph img{transform:scale(1.15)}
+  .page{grid-template-columns:1fr 1fr}
+  .page .fr:nth-child(n){grid-column:span 2}
+  .cap{font-size:15px;max-width:92%}
+  .acts{grid-template-columns:1fr}
+  .povs{grid-template-columns:1fr}
+  .mode{grid-template-columns:1fr}
+  .mode .fr{border-right:0;border-bottom:5px solid var(--ink)}
+  .mode .fr img{min-height:0;aspect-ratio:16/9}
+  .breaks .a,.breaks .b{grid-column:1/13}
+  .facts{grid-template-columns:1fr}
+  .garage{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .swarm{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .krow .un{grid-template-columns:84px 1fr}
+  .feed div:nth-child(2n){margin-left:12px}
+  .feed div{font-size:18px}
+  .ctl td{padding:8px 12px;font-size:17px}
+  .ctl td:first-child{white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){.title .bg,.logo{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="title dots" id="top">
+  <img class="bg" src="media/hero-0.webp" alt="" fetchpriority="high">
+  <div class="shade"></div>
+  <div class="wrap">
+    <div>
+      <h1 class="logo">Ore Else</h1>
+      <p class="wt">Working title &middot; Coming to Steam</p>
+      <p class="demo"><span>Browser demo coming soon</span></p>
+      <p class="pitch">Start as one worker with a drill and build an army that argues with you. Then jump into any body you own, or run the lot from above.</p>
+      <nav class="menu" aria-label="Ore Else">
+        <a class="pan" href="#campaign"><b>Campaign</b><small>42 jobs, four acts</small></a>
+        <a class="pan" href="#modes"><b>Skirmish</b><small>You against the bots</small></a>
+        <a class="pan" href="#modes"><b>Multiplayer</b><small>Online or one screen</small></a>
+      </nav>
+    </div>
+    <div class="side">
+      <div class="pan card"><div class="un">
+        <div class="hd"><span>Trailer</span><span>0:23</span></div>
+        <div class="reel">
+          <video id="trailer" src="media/trailer.mp4" poster="media/trailer-poster.jpg" muted loop playsinline autoplay preload="auto" aria-label="Ore Else trailer: drilling, the jump wheel, a firefight, a tower falling, and playing as the Veyl"></video>
+        </div>
+        <div class="bd">
+          <p>Drilling, the jump wheel, a firefight, a tower coming down, and a turn as the Veyl.</p>
+          <button class="btn" type="button" id="sound">Sound on</button>
+        </div>
+      </div></div>
+      <div class="pan note"><div class="un bd">
+        <p class="lbl">Shift notes</p>
+        <p>A first-person strategy game for Steam. A demo that runs in a browser tab is coming soon. Mine the moon of Tithe for the Ironhold Charter, or sing for the Veyl, or grow with the Gloam.</p>
+      </div></div>
+    </div>
+  </div>
+  <div class="botbar">
+    <div class="wrap">
+      <span class="who">Pick a side</span><span class="lb">Ironhold &middot; Veyl &middot; Gloam</span>
+      <span class="emb"><img src="media/emblem-0.svg" alt="Ironhold Charter"><img src="media/emblem-1.svg" alt="Veyl Chorus"><img src="media/emblem-2.svg" alt="The Gloam"></span>
+      <span class="st">Full game on Steam &middot; Browser demo coming soon</span>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="story dots" id="campaign">
+  <div class="wrap">
+    <div class="tcard">
+      <div class="tx">
+        <span class="lbl">You get a title card the first time you jump into a body</span>
+        <h2>Rigger Nineteen</h2>
+        <p class="q">New hire on the moon of Tithe. Drill included.</p>
+      </div>
+      <div class="ph"><img src="media/port/rigger.jpg" alt="A Rigger in a yellow hard hat and goggles, holding a drill"></div>
+    </div>
+
+    <div class="head">
+      <h2>A story in <em>four acts.</em></h2>
+      <p>You play Rigger Nineteen, a new hire on the moon Tithe. The company says the locals are friendly. The company has never been here. Between jobs, the game draws its cut scenes as comic panels in its own renderer.</p>
+    </div>
+
+    <div class="page">
+      <div class="fr"><img src="media/story-arrival.jpg" alt="Comic panel: Ironhold crew in the yard, one says he runs the book on new hires" loading="lazy"></div>
+      <div class="fr"><img src="media/story-drillsite.jpg" alt="Comic panel: a lattice drill tower at dusk over the glass" loading="lazy"></div>
+      <div class="fr"><img src="media/story-firststone.jpg" alt="Comic panel: a crystal spire inside rings of glass pillars" loading="lazy"></div>
+      <div class="fr"><img src="media/story-crack.jpg" alt="Comic panel: a giant mushroom with glowing pods in a green swamp" loading="lazy"></div>
+      <div class="fr"><img src="media/story-moss.jpg" alt="Comic panel: a Rigger alone on the road facing a purple Veyl walker" loading="lazy"></div>
+      <div class="fr"><img src="media/story-lastverse.jpg" alt="Comic panel: a towering Veyl Warden with a pink core" loading="lazy"></div>
+      <div class="fr"><img src="media/story-noted.jpg" alt="Comic panel: a Quartermaster note on a black page" loading="lazy"></div>
+    </div>
+
+    <div class="acts">
+      <div class="pan act"><div class="un"><span class="n">Act 1 &middot; Jobs 1 to 14</span><h3>Dig</h3><p>The Ironhold Charter against the Veyl. The yard, Flux, a second base, high ground, mines, fliers and the command view.</p></div></div>
+      <div class="pan act"><div class="un"><span class="n">Act 2 &middot; Jobs 15 to 26</span><h3>Sing</h3><p>Change sides and play the Veyl. Song fields, unseen bodies, the Chord and the Ferry.</p></div></div>
+      <div class="pan act"><div class="un"><span class="n">Act 3 &middot; Jobs 27 to 36</span><h3>Grow</h3><p>Play the Gloam. Buds and the Bloom, digging in, ripening, tunnels.</p></div></div>
+      <div class="pan act"><div class="un"><span class="n">Act 4 &middot; Jobs 37 to 42</span><h3>Or Else</h3><p>Each side against Charter Security, the company's own troops in grey. Then a last job against the clock.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="jump">
+  <div class="wrap">
+    <div class="head">
+      <h2>Jump into <em>any body on the payroll.</em></h2>
+      <p>Hold Tab and the match slows down while you pick. Let go and you are behind a rifle or at the controls of a walker, and the body you left keeps working.</p>
+    </div>
+    <div class="grid">
+      <div class="fr big"><img src="media/mock-02-jump.jpg" alt="The jump overview: the yard from above with a list of bodies to jump into" loading="lazy"></div>
+      <div class="keys">
+        <div class="pan krow"><div class="un"><span class="k"><span class="key y">Tab</span></span><p><b>Pick a body</b>Hold for the slowed overview of everything on your payroll.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key y">F</span></span><p><b>That one</b>Jump into the unit you are looking at.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key y">Q</span></span><p><b>Go back</b>Return to your last body. If yours dies, you drop into the nearest.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key">N</span></span><p><b>Lift off</b>Leave your body for the command view. The mouse wheel does the same.</p></div></div>
+      </div>
+    </div>
+    <div class="povs">
+      <div class="pov"><div class="fr"><img src="media/mock-01-rigger-hud.jpg" alt="First person as a Rigger with a yellow drill, building a Bunkhouse" loading="lazy"><span class="tag">Rigger</span></div><p>Drill ore by hand, walk it home, stake out buildings and weld them up.</p></div>
+      <div class="pov"><div class="fr"><img src="media/gantry.jpg" alt="Inside the cockpit of a Gantry walker with a cannon on each side" loading="lazy"><span class="tag">Gantry</span></div><p>Two legs, two cannons, and a stomp that knocks nearby troops off their feet.</p></div>
+      <div class="pov"><div class="fr"><img src="media/versus.jpg" alt="First person as a Veyl Lancer with a crystal blade for an arm" loading="lazy"><span class="tag">Lancer</span></div><p>Or play the other side. Every pairing works, mirrors included.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="above dots" id="command">
+  <div class="wrap">
+    <div class="head">
+      <h2>Scroll out and <em>run the yard from above.</em></h2>
+      <p>Roll the wheel back and the camera lifts off your body into an angled view of the yard. Drag a box round your fighters and right click to send them. Roll it further for the whole map, or all the way in to drop into the body you picked.</p>
+    </div>
+    <div class="fr wide"><img src="media/cmd-picked.jpg" alt="The command view: the Ironhold yard seen from above at an angle, a squad of fighters ringed after a box select, with the command panel and key hints on screen" loading="lazy"></div>
+    <div class="grid">
+      <div class="keys">
+        <div class="pan krow"><div class="un"><span class="k"><span class="key y">Wheel</span></span><p><b>Zoom</b>Out for the command view, then the map. All the way in drops you into a body.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key y">Drag</span></span><p><b>Pick bodies</b>Click one or drag a box. A box with fighters in it leaves the workers out.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key y">R&nbsp;click</span></span><p><b>Send them</b>Right click a spot, an enemy, a seam or a building site and they go.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key">E</span><span class="key">T</span></span><p><b>Order from a building</b>Click a building, then train and research from it.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key">F</span></span><p><b>Jump in</b>Drive the first body you picked.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key">H</span></span><p><b>Scout</b>Send a scout down a road none of yours has looked along.</p></div></div>
+        <div class="pan krow"><div class="un"><span class="k"><span class="key">N</span></span><p><b>Back down</b>Return to the body you left.</p></div></div>
+      </div>
+      <div class="two">
+        <div class="fr"><img src="media/cmd-far-clean.jpg" alt="The yard from further out in the command view, buildings and crew small on the orange ground" loading="lazy"><span class="tag">Zoomed out</span></div>
+        <p class="sight">From above you see what your crew sees. Enemy bodies show inside their sight, and ground none of yours has walked is dark.</p>
+        <div class="fr"><img src="media/cmd-map.jpg" alt="The whole map view, with the yard and the ground your crew has seen" loading="lazy"><span class="tag">The map</span></div>
+      </div>
+    </div>
+    <div class="facts">
+      <div class="pan fact"><div class="un"><b>+15%</b><p>Damage from your fighters within 30 m of the body you are driving.</p></div></div>
+      <div class="pan fact"><div class="un"><b>8%</b><p>Less damage taken by those same fighters. From the command view you lead none of them.</p></div></div>
+      <div class="pan fact"><div class="un"><b>No pause</b><p>The match keeps running at full speed while you are up there.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="plans dots">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="head">
+          <h2>The army pitches its plans <em>out loud.</em></h2>
+          <p>Squads pitch a plan when they have the numbers. You agree, pick the other road, hold them back or take the lead yourself.</p>
+        </div>
+        <div class="feed" aria-label="Lines from the game">
+          <div><i>Alpha lead</i>Pushing the east yard. Shoot the glowy bits.</div>
+          <div><i>Alpha lead</i>Going the long way round. Nobody sneeze.</div>
+          <div><i>Ironhold chatter</i>Quartermaster owes me nine ore. I counted.</div>
+          <div class="t"><i>Veyl chatter</i>The Ironhold sing so badly. All hammer, no tune.</div>
+          <div class="g"><i>Gloam chatter</i>A Snapper bit me. It said it was practice.</div>
+        </div>
+        <div class="answer">
+          <span><span class="key y">Z</span>Agree</span>
+          <span><span class="key">C</span>Other route</span>
+          <span><span class="key">X</span>Hold</span>
+          <span><span class="key">V</span>Follow me</span>
+        </div>
+      </div>
+      <div>
+        <div class="fr shot"><img src="media/mock-03-callout.jpg" alt="A squad plan callout card over the yard: Alpha Lead proposes a Watchpost before they go" loading="lazy"></div>
+        <div class="pan qm"><div class="un"><span class="key y">G</span><p>The Quartermaster runs the economy for you: build order, beds, upgrades, training. Press G to do it all by hand instead.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sides" id="sides">
+  <div class="wrap">
+    <div class="head">
+      <h2>Three sides, and <em>none of them is reasonable.</em></h2>
+      <p>Play any of them in the campaign, in a skirmish or online. Each has its own bodies, buildings, voice and bot brain.</p>
+    </div>
+    <div class="grid">
+      <article class="fac">
+        <div class="ph"><img src="media/base-ironhold.jpg" alt="The Ironhold Headframe, a mining tower over a blue site office in a desert yard" loading="lazy"><img class="emb2" src="media/emblem-0.svg" alt=""><span class="act2">Act 1 &middot; Dig</span></div>
+        <div class="bd">
+          <h3>Ironhold Charter</h3>
+          <p>A mining company with a payroll problem. Riggers drill, Linesmen shoot, Breachers hold the shield and the Gantry walks over everyone.</p>
+          <p class="balloon"><small>Ironhold crew</small>Do the purple ones have a union? Asking for me.</p>
+          <div class="roster">
+            <figure><img src="media/port/rigger.jpg" alt="" loading="lazy"><figcaption>Rigger</figcaption></figure>
+            <figure><img src="media/port/linesman.jpg" alt="" loading="lazy"><figcaption>Linesman</figcaption></figure>
+            <figure><img src="media/port/breacher.jpg" alt="" loading="lazy"><figcaption>Breacher</figcaption></figure>
+            <figure><img src="media/port/longshot.jpg" alt="" loading="lazy"><figcaption>Longshot</figcaption></figure>
+            <figure><img src="media/port/patch.jpg" alt="" loading="lazy"><figcaption>Patch</figcaption></figure>
+            <figure><img src="media/port/gantry.jpg" alt="" loading="lazy"><figcaption>Gantry</figcaption></figure>
+          </div>
+        </div>
+      </article>
+      <article class="fac v">
+        <div class="ph"><img src="media/base-veyl.jpg" alt="A Veyl Choir Stone, a violet crystal spire with pink rings, in the same yard" loading="lazy"><img class="emb2" src="media/emblem-1.svg" alt=""><span class="act2">Act 2 &middot; Sing</span></div>
+        <div class="bd">
+          <h3>Veyl Chorus</h3>
+          <p>They sing before they shoot, which they consider polite. Their towers hum, their gates grow, and the Warden is the low note the ground hears.</p>
+          <p class="balloon"><small>Veyl Chorus</small>The rock here hums in a minor key. I do not care for it.</p>
+          <div class="roster">
+            <figure><img src="media/port/tender.jpg" alt="" loading="lazy"><figcaption>Tender</figcaption></figure>
+            <figure><img src="media/port/cantor.jpg" alt="" loading="lazy"><figcaption>Cantor</figcaption></figure>
+            <figure><img src="media/port/lancer.jpg" alt="" loading="lazy"><figcaption>Lancer</figcaption></figure>
+            <figure><img src="media/port/swift.jpg" alt="" loading="lazy"><figcaption>Swift</figcaption></figure>
+            <figure><img src="media/port/warden.jpg" alt="" loading="lazy"><figcaption>Warden</figcaption></figure>
+          </div>
+        </div>
+      </article>
+      <article class="fac g">
+        <div class="ph"><img src="media/base-gloam.jpg" alt="A Gloam Mother Cap, a giant teal mushroom over a carpet of green Bloom" loading="lazy"><img class="emb2" src="media/emblem-2.svg" alt=""><span class="act2">Act 3 &middot; Grow</span></div>
+        <div class="bd">
+          <h3>The Gloam</h3>
+          <p>A fungal swarm that grows out of the ground. Cheap, fast and always more of them. Every unit ripens from a Bud, and they heal on their own Bloom.</p>
+          <p class="balloon"><small>The Gloam</small>Their metal is chewy. Not filling.</p>
+          <div class="roster">
+            <figure><img src="media/port/grazer.jpg" alt="" loading="lazy"><figcaption>Grazer</figcaption></figure>
+            <figure><img src="media/port/snapper.jpg" alt="" loading="lazy"><figcaption>Snapper</figcaption></figure>
+            <figure><img src="media/port/quillback.jpg" alt="" loading="lazy"><figcaption>Quillback</figcaption></figure>
+            <figure><img src="media/port/blister.jpg" alt="" loading="lazy"><figcaption>Blister</figcaption></figure>
+            <figure><img src="media/port/mulcher.jpg" alt="" loading="lazy"><figcaption>Mulcher</figcaption></figure>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="glabel"><h3>The motor pool</h3><span>Ironhold machines you can drive, fly or bolt onto the yard</span></div>
+    <div class="garage">
+      <figure><img src="media/icons/dustbike.webp" alt="" loading="lazy"><figcaption>Dustbike</figcaption></figure>
+      <figure><img src="media/icons/gadfly.webp" alt="" loading="lazy"><figcaption>Gadfly</figcaption></figure>
+      <figure><img src="media/icons/flakkite.webp" alt="" loading="lazy"><figcaption>Flak Kite</figcaption></figure>
+      <figure><img src="media/icons/hopper.webp" alt="" loading="lazy"><figcaption>Hopper</figcaption></figure>
+      <figure><img src="media/icons/hauldrone.webp" alt="" loading="lazy"><figcaption>Haul Drone</figcaption></figure>
+      <figure><img src="media/icons/piledriver.webp" alt="" loading="lazy"><figcaption>Pile Driver</figcaption></figure>
+      <figure><img src="media/icons/claimbarge.webp" alt="" loading="lazy"><figcaption>Claim Barge</figcaption></figure>
+      <figure><img src="media/icons/sapper.webp" alt="" loading="lazy"><figcaption>Sapper</figcaption></figure>
+      <figure><img src="media/icons/surveyor.webp" alt="" loading="lazy"><figcaption>Surveyor</figcaption></figure>
+    </div>
+    <div class="glabel"><h3>The swarm</h3><span>Some of what hatches from a Gloam Bud</span></div>
+    <div class="swarm" aria-label="Gloam units and growths">
+      <img src="media/icons/snapper.webp" alt="Snapper" loading="lazy"><img src="media/icons/quillback.webp" alt="Quillback" loading="lazy"><img src="media/icons/blister.webp" alt="Blister" loading="lazy"><img src="media/icons/mulcher.webp" alt="Mulcher" loading="lazy"><img src="media/icons/grazer.webp" alt="Grazer" loading="lazy"><img src="media/icons/drifter.webp" alt="Drifter" loading="lazy"><img src="media/icons/gnatwing.webp" alt="Gnatwing" loading="lazy"><img src="media/icons/hooksail.webp" alt="Hooksail" loading="lazy"><img src="media/icons/eldercap.webp" alt="Elder Cap" loading="lazy"><img src="media/icons/needler.webp" alt="Needler" loading="lazy"><img src="media/icons/lobber.webp" alt="Lobber" loading="lazy"><img src="media/icons/wingspire.webp" alt="Wing Spire" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<section class="breaks">
+  <div class="wrap">
+    <div class="head">
+      <h2>Everything <em>breaks.</em></h2>
+      <p>Rocks crumble in stages and fuel drums set each other off. Rubble falls, bounces, piles up against walls and gets kicked when you walk through it. Tall towers fall on whatever is standing under them.</p>
+    </div>
+    <div class="grid">
+      <div class="fr a"><img src="media/topple.jpg" alt="A tall Veyl tower toppling over in pieces" loading="lazy"></div>
+      <div class="fr b"><img src="media/collapse.jpg" alt="Chunks of rock flying from a blast in a canyon" loading="lazy"><span class="sfx" aria-hidden="true">Krak!</span></div>
+    </div>
+    <div class="facts">
+      <div class="pan fact"><div class="un"><b>339</b><p>Pieces of scenery on one map, and every one of them takes damage.</p></div></div>
+      <div class="pan fact"><div class="un"><b>100 s</b><p>For one rifleman to take down a production building.</p></div></div>
+      <div class="pan fact"><div class="un"><b>80%</b><p>Extra punch on a Breacher's blast after the shield soaks enough damage.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="modes" id="modes">
+  <div class="wrap">
+    <div class="head">
+      <h2>Four ways <em>to clock in.</em></h2>
+    </div>
+    <div class="grid">
+      <article class="mode"><div class="fr"><img src="media/push.jpg" alt="A Linesman squad holding the road against a towering Veyl Warden" loading="lazy"></div><div class="bd"><span class="n">42 jobs and three side jobs</span><h3>Campaign</h3><p>You learn one part of the trade per job. The first hands you a drill, and by Act 4 you are leading bot allies against Charter Security. Finishing Act 1 opens multiplayer.</p><ul class="chips"><li>Dig</li><li>Sing</li><li>Grow</li><li>Or Else</li></ul></div></article>
+      <article class="mode"><div class="fr"><img src="media/glassflats.jpg" alt="First person on the Glass Flats, a wide open map with Veyl spires ahead" loading="lazy"></div><div class="bd"><span class="n">Any side against any side</span><h3>Skirmish</h3><p>Pick a map, a size and a shift. Day shift goes easy on you and double shift does not. Vast maps hide the other base until you find it.</p><ul class="chips"><li>Needle's Eye</li><li>Switchback</li><li>Glass Flats</li><li>Crossing</li><li>Wheel</li></ul></div></article>
+      <article class="mode"><div class="fr"><img src="media/coop.jpg" alt="Co-op: Ada is driving this one, a Rigger beside the Headframe" loading="lazy"></div><div class="bd"><span class="n">Up to four players</span><h3>Co-op</h3><p>You all share one yard and one payroll. Read out a five letter lobby code and ready up. The raids grow with the crew.</p><ul class="chips"><li>Online</li><li>Split screen</li></ul></div></article>
+      <article class="mode"><div class="fr"><img src="media/lineup.jpg" alt="A Veyl Warden lined up beside Ironhold crew in the yard" loading="lazy"></div><div class="bd"><span class="n">Lead the other side</span><h3>Versus</h3><p>Press Play as the Veyl in the lobby and run the raids yourself. You win by breaking every Headframe.</p><ul class="chips"><li>Online</li><li>Split screen</li></ul></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="play">
+  <div class="wrap">
+    <div class="head">
+      <h2>A browser demo is coming soon.</h2>
+      <p>The full game is coming to Steam. The demo will run in a browser tab, with nothing to install. The models are sculpted in code and inked when the game boots, and a synth plays the music live.</p>
+    </div>
+    <div class="grid">
+      <div class="ctl">
+        <table>
+          <tr><td><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span></td><td>Move. Shift to sprint, Space to dash.</td></tr>
+          <tr><td><span class="key">Click</span></td><td>Drill, weld, shoot.</td></tr>
+          <tr><td><span class="key">R&nbsp;click</span></td><td>Aim the rifle, raise the shield, scope in.</td></tr>
+          <tr><td><span class="key">1</span><span class="key">2</span></td><td>Drill, or the build menu.</td></tr>
+          <tr><td><span class="key">E</span><span class="key">T</span></td><td>Train or buy upgrades at the building you face.</td></tr>
+          <tr><td><span class="key">Tab</span><span class="key">F</span><span class="key">Q</span></td><td>Jump.</td></tr>
+          <tr><td><span class="key">N</span></td><td>The command view. Wheel out does the same.</td></tr>
+          <tr><td><span class="key">M</span></td><td>The whole map.</td></tr>
+        </table>
+      </div>
+      <div class="ways">
+        <div class="way"><div class="un"><h3>Keyboard and mouse</h3><p>The keys are in the table, and you can rebind them. Mouse speed and volume live on the pause screen.</p></div></div>
+        <div class="way"><div class="un"><h3>On a phone</h3><p>The browser build takes touch. Turn it sideways. Look with the right thumb, move with the left, and the buttons change with the body you are in.</p></div></div>
+        <div class="way"><div class="un"><h3>Two on one machine</h3><p>Split screen co-op or versus, side by side or stacked, with no server.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="close">
+  <img class="bg" src="media/hero-2.webp" alt="" loading="lazy">
+  <div class="wrap">
+    <h2>Clock in<br>on Steam.</h2>
+    <p>Ore Else is in development for Steam, and a demo you can play in your browser is coming. The name is a working title.</p>
+    <div class="row">
+      <a class="btn" href="https://andagainsoftware.com/">More from andAgainSoftware</a>
+      <a class="btn p" href="#top">Back to the yard</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="mk" href="https://andagainsoftware.com/"><img src="media/andagainsoftware.png" alt="andAgainSoftware"></a>
+    <p>Ore Else is an original game by andAgainSoftware. Built with three.js and TypeScript. Sound effects are CC0 recordings and designed samples.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var v=document.getElementById('trailer'),b=document.getElementById('sound');
+  if(!v||!b)return;
+  try{if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.pause();}}catch(e){}
+  b.addEventListener('click',function(){
+    if(v.muted){v.muted=false;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});b.textContent='Sound off';}
+    else{v.muted=true;b.textContent='Sound on';}
+  });
+})();
+</script>
+</body>
+</html>

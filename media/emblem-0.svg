@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="emblem" viewBox="-6 -6 116 116" aria-hidden="true">
+    <g transform="translate(4.5 4.5)" fill="#0e0d14" stroke="#0e0d14" stroke-width="7" stroke-linejoin="round">
+  <path d="M85.7,40.9L95.6,44.6L95.8,55.4L86.0,59.1L85.4,60.0L92.0,68.0L86.5,77.3L76.2,75.5L76.1,76.8L77.9,87.3L68.4,92.9L60.2,86.1L59.0,85.3L55.3,95.0L44.7,95.0L41.0,85.4L39.8,86.1L31.6,92.8L22.2,87.3L23.9,76.7L23.7,75.6L13.4,77.3L7.9,68.1L14.4,60.0L14.1,59.1L4.4,55.4L4.5,44.6L14.4,41.0L14.1,39.9L7.4,31.7L12.7,22.2L23.2,23.9L24.5,23.8L22.9,13.7L32.1,8.4L40.1,14.9L40.8,13.6L44.5,3.6L55.5,3.7L59.2,13.7L59.9,14.8L68.0,8.2L77.3,13.4L75.6,23.7L76.7,24.0L87.0,22.4L92.3,31.8L85.6,40.0Z" fill="#0e0d14"/>
+  <circle cx="50" cy="50" r="30" fill="#0e0d14"/>
+  <path d="M27 50 L31 47 M33 66 L37 63 M64 70 L68 67 M70 41 L74 38" stroke="#0e0d14" stroke-width="2.4"/>
+  <path d="M26 59 Q27 31 50 29 Q73 31 74 59 Z" fill="#0e0d14"/>
+  <path d="M44 30.5 Q46 45 45 59 M56 30.5 Q54 45 55 59" stroke="#0e0d14" stroke-width="2.6" fill="#0e0d14"/>
+  <path d="M30 52 Q31 40 37 35" stroke="#0e0d14" stroke-width="3" fill="#0e0d14" stroke-linecap="round"/>
+  <path d="M15 59 L85 59 L82 68 Q50 72 18 68 Z" fill="#0e0d14"/>
+  <circle cx="50" cy="45" r="5.5" fill="#0e0d14"/></g>
+    <g stroke="#0e0d14" stroke-width="5" stroke-linejoin="round" paint-order="stroke">
+  <path d="M85.7,40.9L95.6,44.6L95.8,55.4L86.0,59.1L85.4,60.0L92.0,68.0L86.5,77.3L76.2,75.5L76.1,76.8L77.9,87.3L68.4,92.9L60.2,86.1L59.0,85.3L55.3,95.0L44.7,95.0L41.0,85.4L39.8,86.1L31.6,92.8L22.2,87.3L23.9,76.7L23.7,75.6L13.4,77.3L7.9,68.1L14.4,60.0L14.1,59.1L4.4,55.4L4.5,44.6L14.4,41.0L14.1,39.9L7.4,31.7L12.7,22.2L23.2,23.9L24.5,23.8L22.9,13.7L32.1,8.4L40.1,14.9L40.8,13.6L44.5,3.6L55.5,3.7L59.2,13.7L59.9,14.8L68.0,8.2L77.3,13.4L75.6,23.7L76.7,24.0L87.0,22.4L92.3,31.8L85.6,40.0Z" fill="#ffc21a"/>
+  <circle cx="50" cy="50" r="30" fill="#2b2129"/>
+  <path d="M27 50 L31 47 M33 66 L37 63 M64 70 L68 67 M70 41 L74 38" stroke="#4a3a40" stroke-width="2.4"/>
+  <path d="M26 59 Q27 31 50 29 Q73 31 74 59 Z" fill="#ffc21a"/>
+  <path d="M44 30.5 Q46 45 45 59 M56 30.5 Q54 45 55 59" stroke="#0e0d14" stroke-width="2.6" fill="none"/>
+  <path d="M30 52 Q31 40 37 35" stroke="#fff3c4" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M15 59 L85 59 L82 68 Q50 72 18 68 Z" fill="#e0a20c"/>
+  <circle cx="50" cy="45" r="5.5" fill="#fff3c4"/></g>
+  </svg>
